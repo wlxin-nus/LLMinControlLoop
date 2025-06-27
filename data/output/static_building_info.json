@@ -1,0 +1,342 @@
+{
+    "action_space": {
+        "actions": [
+            {
+                "name": "con_oveTSetCoo_activate",
+                "description": "Activation signal to overwrite input con_oveTSetCoo_u where 1 activates, 0 deactivates (default value)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "con_oveTSetCoo_u",
+                "description": "Zone temperature setpoint for cooling",
+                "min_value": 278.15,
+                "max_value": 308.15,
+                "unit": "K"
+            },
+            {
+                "name": "con_oveTSetHea_activate",
+                "description": "Activation signal to overwrite input con_oveTSetHea_u where 1 activates, 0 deactivates (default value)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "con_oveTSetHea_u",
+                "description": "Zone temperature setpoint for heating",
+                "min_value": 278.15,
+                "max_value": 308.15,
+                "unit": "K"
+            },
+            {
+                "name": "fcu_oveFan_activate",
+                "description": "Activation signal to overwrite input fcu_oveFan_u where 1 activates, 0 deactivates (default value)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "fcu_oveFan_u",
+                "description": "Fan control signal as air mass flow rate normalized to the design air mass flow rate",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "fcu_oveTSup_activate",
+                "description": "Activation signal to overwrite input fcu_oveTSup_u where 1 activates, 0 deactivates (default value)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "fcu_oveTSup_u",
+                "description": "Supply air temperature setpoint",
+                "min_value": 285.15,
+                "max_value": 313.15,
+                "unit": "K"
+            }
+        ]
+    },
+    "observation_space": {
+        "observations": [
+            {
+                "name": "fcu_reaFloSup_y",
+                "description": "Supply air mass flow rate",
+                "unit": "kg/s"
+            },
+            {
+                "name": "fcu_reaPCoo_y",
+                "description": "Cooling electrical power consumption",
+                "unit": "W"
+            },
+            {
+                "name": "fcu_reaPFan_y",
+                "description": "Supply fan electrical power consumption",
+                "unit": "W"
+            },
+            {
+                "name": "fcu_reaPHea_y",
+                "description": "Heating thermal power consumption",
+                "unit": "W"
+            },
+            {
+                "name": "zon_reaCO2RooAir_y",
+                "description": "Zone air CO2 concentration",
+                "unit": "ppm"
+            },
+            {
+                "name": "zon_reaPLig_y",
+                "description": "Lighting power submeter",
+                "unit": "W"
+            },
+            {
+                "name": "zon_reaPPlu_y",
+                "description": "Plug load power submeter",
+                "unit": "W"
+            },
+            {
+                "name": "zon_reaTRooAir_y",
+                "description": "Zone air temperature",
+                "unit": "K"
+            },
+            {
+                "name": "zon_weaSta_reaWeaCeiHei_y",
+                "description": "Cloud cover ceiling height measurement",
+                "unit": "m"
+            },
+            {
+                "name": "zon_weaSta_reaWeaCloTim_y",
+                "description": "Day number with units of seconds",
+                "unit": "s"
+            },
+            {
+                "name": "zon_weaSta_reaWeaHDifHor_y",
+                "description": "Horizontal diffuse solar radiation measurement",
+                "unit": "W/m2"
+            },
+            {
+                "name": "zon_weaSta_reaWeaHDirNor_y",
+                "description": "Direct normal radiation measurement",
+                "unit": "W/m2"
+            },
+            {
+                "name": "zon_weaSta_reaWeaHGloHor_y",
+                "description": "Global horizontal solar irradiation measurement",
+                "unit": "W/m2"
+            },
+            {
+                "name": "zon_weaSta_reaWeaHHorIR_y",
+                "description": "Horizontal infrared irradiation measurement",
+                "unit": "W/m2"
+            },
+            {
+                "name": "zon_weaSta_reaWeaLat_y",
+                "description": "Latitude of the location",
+                "unit": "rad"
+            },
+            {
+                "name": "zon_weaSta_reaWeaLon_y",
+                "description": "Longitude of the location",
+                "unit": "rad"
+            },
+            {
+                "name": "zon_weaSta_reaWeaNOpa_y",
+                "description": "Opaque sky cover measurement",
+                "unit": "1"
+            },
+            {
+                "name": "zon_weaSta_reaWeaNTot_y",
+                "description": "Sky cover measurement",
+                "unit": "1"
+            },
+            {
+                "name": "zon_weaSta_reaWeaPAtm_y",
+                "description": "Atmospheric pressure measurement",
+                "unit": "Pa"
+            },
+            {
+                "name": "zon_weaSta_reaWeaRelHum_y",
+                "description": "Outside relative humidity measurement",
+                "unit": "1"
+            },
+            {
+                "name": "zon_weaSta_reaWeaSolAlt_y",
+                "description": "Solar altitude angle measurement",
+                "unit": "rad"
+            },
+            {
+                "name": "zon_weaSta_reaWeaSolDec_y",
+                "description": "Solar declination angle measurement",
+                "unit": "rad"
+            },
+            {
+                "name": "zon_weaSta_reaWeaSolHouAng_y",
+                "description": "Solar hour angle measurement",
+                "unit": "rad"
+            },
+            {
+                "name": "zon_weaSta_reaWeaSolTim_y",
+                "description": "Solar time",
+                "unit": "s"
+            },
+            {
+                "name": "zon_weaSta_reaWeaSolZen_y",
+                "description": "Solar zenith angle measurement",
+                "unit": "rad"
+            },
+            {
+                "name": "zon_weaSta_reaWeaTBlaSky_y",
+                "description": "Black-body sky temperature measurement",
+                "unit": "K"
+            },
+            {
+                "name": "zon_weaSta_reaWeaTDewPoi_y",
+                "description": "Dew point temperature measurement",
+                "unit": "K"
+            },
+            {
+                "name": "zon_weaSta_reaWeaTDryBul_y",
+                "description": "Outside drybulb temperature measurement",
+                "unit": "K"
+            },
+            {
+                "name": "zon_weaSta_reaWeaTWetBul_y",
+                "description": "Wet bulb temperature measurement",
+                "unit": "K"
+            },
+            {
+                "name": "zon_weaSta_reaWeaWinDir_y",
+                "description": "Wind direction measurement",
+                "unit": "rad"
+            },
+            {
+                "name": "zon_weaSta_reaWeaWinSpe_y",
+                "description": "Wind speed measurement",
+                "unit": "m/s"
+            }
+        ]
+    },
+    "building_info": {
+        "general": {
+            "building_type": null,
+            "location": "Denver, CO, USA",
+            "climate_zone": "Denver-Stapleton,CO,USA,TMY",
+            "total_floor_area": null,
+            "number_of_floors": null,
+            "year_of_construction": null
+        },
+        "envelope": {
+            "exterior_walls": {
+                "layers": [
+                    {
+                        "name": "Layer 1",
+                        "thickness_m": 0.009,
+                        "thermal_conductivity_W_mK": 0.14,
+                        "specific_heat_capacity_J_kgK": 900.0,
+                        "density_kg_m3": 530.0
+                    },
+                    {
+                        "name": "Layer 2",
+                        "thickness_m": 0.0615,
+                        "thermal_conductivity_W_mK": 0.04,
+                        "specific_heat_capacity_J_kgK": 1400.0,
+                        "density_kg_m3": 10.0
+                    },
+                    {
+                        "name": "Layer 3",
+                        "thickness_m": 0.1,
+                        "thermal_conductivity_W_mK": 0.51,
+                        "specific_heat_capacity_J_kgK": 1000.0,
+                        "density_kg_m3": 1400.0
+                    }
+                ],
+                "ir_emissivity_outside": null,
+                "solar_emissivity_outside": null,
+                "ir_emissivity_inside": null,
+                "solar_emissivity_inside": null
+            },
+            "roof": {
+                "layers": [
+                    {
+                        "name": "Layer 1",
+                        "thickness_m": 0.019,
+                        "thermal_conductivity_W_mK": 0.14,
+                        "specific_heat_capacity_J_kgK": 900.0,
+                        "density_kg_m3": 530.0
+                    },
+                    {
+                        "name": "Layer 2",
+                        "thickness_m": 0.1118,
+                        "thermal_conductivity_W_mK": 0.04,
+                        "specific_heat_capacity_J_kgK": 840.0,
+                        "density_kg_m3": 12.0
+                    },
+                    {
+                        "name": "Layer 3",
+                        "thickness_m": 0.01,
+                        "thermal_conductivity_W_mK": 0.16,
+                        "specific_heat_capacity_J_kgK": 840.0,
+                        "density_kg_m3": 950.0
+                    }
+                ],
+                "ir_emissivity_outside": null,
+                "solar_emissivity_outside": null,
+                "ir_emissivity_inside": null,
+                "solar_emissivity_inside": null
+            },
+            "floors": {
+                "layers": [
+                    {
+                        "name": "Layer 1",
+                        "thickness_m": 1.007,
+                        "thermal_conductivity_W_mK": 0.04,
+                        "specific_heat_capacity_J_kgK": 0.0,
+                        "density_kg_m3": 0.0
+                    },
+                    {
+                        "name": "Layer 2",
+                        "thickness_m": 0.08,
+                        "thermal_conductivity_W_mK": 1.13,
+                        "specific_heat_capacity_J_kgK": 1000.0,
+                        "density_kg_m3": 1400.0
+                    }
+                ],
+                "ir_emissivity_outside": null,
+                "solar_emissivity_outside": null,
+                "ir_emissivity_inside": null,
+                "solar_emissivity_inside": null
+            },
+            "windows": null
+        },
+        "internal_loads": {
+            "zones": [
+                {
+                    "name": "Office",
+                    "occupancy_schedule": "8am to 6pm",
+                    "internal_heat_gains": {
+                        "internal_gains": null,
+                        "plug_loads": "computers and monitors",
+                        "lighting": "hanging fluorescent fixtures",
+                        "occupied_period_max": null,
+                        "unoccupied_period_max": null
+                    },
+                    "temperature_setpoints": {
+                        "occupied": {
+                            "heating": 21,
+                            "cooling": 24
+                        },
+                        "unoccupied": {
+                            "heating": 15,
+                            "cooling": 30
+                        }
+                    },
+                    "zone_floor_area": null,
+                    "occupancy": 2
+                }
+            ]
+        },
+        "hvac": null
+    }
+}

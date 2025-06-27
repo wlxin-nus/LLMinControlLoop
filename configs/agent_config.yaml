@@ -1,0 +1,35 @@
+# model:
+#   name: deepseek-chat
+#   base_url: https://api.deepseek.com/v1
+#   # For function calling and structured output, gpt-4-turbo family works well
+#   family: gpt-4-turbo
+#   api_key_env_var: DEEPSEEK_API_KEY
+
+#   parameters:
+#     # Max tokens for the completion
+#     max_tokens: 4096
+#     # Lower temperature for more deterministic, factual output
+#     temperature: 0.1
+#     top_p: 0.9
+
+#   # Capabilities required by autogen for structured output
+#   json_output: true
+#   function_calling: true
+#   vision: false
+#   structured_output: true
+
+model:
+  name: deepseek-chat
+  base_url: https://api.deepseek.com
+  family: gpt-4o
+  api_key_env_var: DEEPSEEK_API_KEY
+
+  parameters:
+    max_tokens: 2048
+    temperature: 0.3
+    top_p: 0.9
+
+  json_output: true
+  function_calling: true
+  vision: false
+  structured_output: ture
