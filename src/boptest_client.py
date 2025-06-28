@@ -61,6 +61,18 @@ def select_testcase(testcase_name: str) -> Optional[str]:
     logging.info(f"Successfully selected testcase. Received testid: {testid}")
     return testid
 
+@_handle_request_errors
+def set_step(testid: str, step: int) -> Optional[Dict[str, Any]]:
+    """
+    【新增】设置BOPTEST模拟的步长。
+    Sets the simulation step for BOPTEST.
+    """
+    url = f"{BOPTEST_BASE_URL}/step/{testid}"
+    payload = {'step': step}
+    logging.info(f"Setting simulation step to {step}s for testid {testid}.")
+    response = requests.put(url, json=payload, timeout=60)
+    response.raise_for_status()
+    return response.json()
 
 @_handle_request_errors
 def initialize(testid: str, start_time: int, warmup_period: int) -> Optional[Dict[str, Any]]:
@@ -143,6 +155,25 @@ def get_kpis(testid: str) -> Optional[Dict[str, Any]]:
     response.raise_for_status()
     return response.json().get('payload', {})
 
+@_handle_request_errors
+def advance_and_get_feedback(testid: str, action: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """
+    【新增】一个复合函数，执行动作、获取新状态和KPIs。
+    A composite function to execute an action, get the new state, and fetch KPIs.
+    """
+    logging.info(f"--- Advancing simulation with action: {action} ---")
+    new_state = advance(testid, action)
+    if new_state is None:
+        logging.error("Failed to advance the simulation.")
+        return None
+
+    logging.info("--- Fetching KPIs after advancing ---")
+    kpis = get_kpis(testid)
+    if kpis is None:
+        logging.warning("Failed to fetch KPIs, but proceeding with the new state.")
+        kpis = {} # Return empty dict if KPIs fail, to not break the flow
+
+    return {"observation": new_state, "kpis": kpis}
 
 @_handle_request_errors
 def stop(testid: str) -> Optional[Dict[str, Any]]:
@@ -162,4 +193,14 @@ def stop(testid: str) -> Optional[Dict[str, Any]]:
     logging.info(f"Stopping test case with testid {testid}")
     response = requests.put(url, timeout=60)
     response.raise_for_status()
-    return response.json()
+    # 【修改】: 检查响应体是否有内容再解析JSON
+    if response.text:
+        try:
+            return response.json()
+        except requests.exceptions.JSONDecodeError:
+            logging.warning("stop() endpoint returned a non-JSON response, but the request was successful.")
+            return {"status": "success", "message": "stop signal sent"}
+    else:
+        # 响应体为空，但请求成功
+        logging.info("stop() endpoint returned an empty response, indicating success.")
+        return {"status": "success", "message": "stop signal sent"}

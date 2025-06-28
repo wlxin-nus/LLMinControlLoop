@@ -21,3 +21,14 @@ BOPTEST_BASE_URL = "http://127.0.0.1:80"
 # 确保目录存在
 os.makedirs(OUTPUT_DATA_DIR, exist_ok=True)
 os.makedirs(INPUT_DATA_DIR, exist_ok=True)
+
+# --- 【新增】: 控制输入给Agent的历史记录步数 ---
+HISTORY_WINDOW_SIZE = 3
+# --- 【新增】: 定义用户的长期控制需求 ---
+USER_DEMAND = (
+    "The controllable parameter is con_oveTSetHea_u in the range ‘min_value’: 278.15, ‘max_value’: 308.15, “unit”: ‘K’."
+    "The primary goal is to minimize energy consumption while strictly ensuring "
+    "that thermal comfort conditions are maintained within an acceptable range."
+)
+CONTROL_STEP = 3600
+SIMULATION_STEPS = 3
