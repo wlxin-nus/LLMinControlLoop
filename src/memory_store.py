@@ -51,11 +51,19 @@ class MemoryStore:
         return self.current_run_history[-num_steps:]
 
     def get_last_reward(self) -> float:
-        """获取最新完整步骤的奖励值。"""
-        if not self.current_run_history:
+        """
+        【修复】获取上一个已完成步骤的奖励值。
+        [FIX] Gets the reward value from the PREVIOUS completed step.
+        """
+        # 如果历史记录少于2条，意味着还没有一个“已完成”的上一步。
+        # If there are less than 2 entries, there's no "previous completed" step yet.
+        if len(self.current_run_history) < 2:
             return 0.0
-        # 返回最后一个时间步的奖励，默认为0.0
-        return self.current_run_history[-1].get("reward", 0.0)
+
+        # 返回倒数第二个条目（即上一个完整步骤）的奖励。
+        # Return the reward from the second-to-last entry (the last completed step).
+        previous_step = self.current_run_history[-2]
+        return previous_step.get("reward", 0.0)
 
     def get_last_objective_integrand(self) -> Optional[float]:
         """【新增】获取上一步的目标函数值。"""

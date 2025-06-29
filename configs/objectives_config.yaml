@@ -1,0 +1,25 @@
+# This file defines the available high-level control objectives for the agent.
+# Each objective links a natural language description (for the LLM) to a
+# specific reward function (for the system).
+
+balance_energy_comfort:
+  description: >
+    The primary goal is to minimize energy consumption while strictly ensuring
+    that thermal comfort conditions are maintained within an acceptable range.
+  reward_function: "calculate_reward_ener_plus_discomfort"
+
+comfort_focus:
+  description: >
+    The primary goal is to maximize thermal comfort at all times. Energy
+    consumption is a secondary concern and should only be minimized if
+    comfort is not compromised.
+  reward_function: "calculate_reward_comfort_focus"
+
+# You can add more objectives here in the future
+#
+# energy_saving_priority:
+#   description: >
+#     The absolute priority is to minimize energy consumption. Minor deviations
+#     from the thermal comfort zone are acceptable to achieve lower energy use.
+#   reward_function: "calculate_reward_energy_priority"
+

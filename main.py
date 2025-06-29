@@ -6,16 +6,9 @@ import asyncio
 from typing import Dict, Optional
 import re
 from typing import Dict, Optional, Tuple
-# --- AutoGen 核心组件 (根据新版API修正) ---
-# --- AutoGen Core Components (Revised for new API) ---
-from autogen_agentchat.agents import AssistantAgent, UserProxyAgent
-from autogen_agentchat.teams import RoundRobinGroupChat
-from autogen_agentchat.conditions import MaxMessageTermination
-from autogen_agentchat.messages import TextMessage
-
 # --- 项目模块 ---
 # --- Project Modules ---
-#from src.extractor import run_extraction_pipeline
+from src.extractor import run_extraction_pipeline
 from src.boptest_client import (
     select_testcase,
     initialize,
@@ -24,11 +17,16 @@ from src.boptest_client import (
     advance_and_get_feedback
 )
 from src.memory_store import MemoryStore
-from src.config import OUTPUT_DATA_DIR, HISTORY_WINDOW_SIZE, USER_DEMAND, CONTROL_STEP, SIMULATION_STEPS
+from src.config import (
+    HISTORY_WINDOW_SIZE, CONTROL_STEP, SIMULATION_STEPS,
+    SELECTED_OBJECTIVE, CONTROLLABLE_PARAM_DESC, TEST_CASE_NAME, START_TIME, WARMUP_PERIOD, USE_GRAPHRAG_TOOL
+)
 from src.agents.information_synthesizer_agent import make_information_synthesizer_agent
 from src.agents.decision_maker_agent import make_decision_maker_agent
+from src.agents.knowledge_retriever_agent import make_knowledge_retriever_agent
 from src.reward_calculator import RewardCalculator
 from src.utils import convert_seconds_to_datetime_string
+from src.core.config_loader import load_objectives_config
 # --- 设置日志记录 ---
 # --- Logging Setup ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -50,21 +48,54 @@ def load_json_file(filepath: str) -> Optional[Dict]:
 # --- 【新增】: 解析LLM输出的辅助函数 ---
 def parse_llm_output(text: str) -> Tuple[Optional[str], Optional[str]]:
     """
-    一个辅助函数，用于从LLM的输出中解析出 <think> 和 <action> 的内容。
+    【修复】: 一个更健壮的解析器，用于从LLM输出中提取 <think> 和 <action>。
+    它能处理LLM忘记<action>标签，并直接输出JSON代码块的情况。
     """
     try:
-        think_match = re.search(r'<think>(.*?)</think>', text, re.DOTALL)
-        action_match = re.search(r'<action>(.*?)</action>', text, re.DOTALL)
+        think_content = None
+        action_content = None
 
-        think_content = think_match.group(1).strip() if think_match else None
-        action_content = action_match.group(1).strip() if action_match else None
+        # 1. 提取 <think> 内容
+        think_match = re.search(r'<think>(.*?)</think>', text, re.DOTALL)
+        if think_match:
+            think_content = think_match.group(1).strip()
+
+        # 2. 提取 <action> 内容 (多种策略)
+        # 策略A: 严格匹配 <action> 标签
+        action_match_strict = re.search(r'<action>(.*?)</action>', text, re.DOTALL)
+        if action_match_strict:
+            action_content = action_match_strict.group(1).strip()
+        else:
+            # 策略B: 查找markdown格式的JSON代码块
+            json_block_match = re.search(r'```json(.*?)```', text, re.DOTALL)
+            if json_block_match:
+                action_content = json_block_match.group(1).strip()
+            else:
+                # 策略C: 查找最后一个独立的JSON对象
+                # 从</think>之后开始查找，避免匹配到think内容里的JSON
+                think_end_pos = think_match.end() if think_match else -1
+                search_area = text[think_end_pos:] if think_end_pos != -1 else text
+
+                # 寻找最后一个 '{' 和 '}' 来捕获JSON
+                start_brace = search_area.rfind('{')
+                end_brace = search_area.rfind('}')
+                if start_brace != -1 and end_brace > start_brace:
+                    potential_json = search_area[start_brace:end_brace + 1]
+                    try:
+                        # 验证它是否是有效的JSON
+                        json.loads(potential_json)
+                        action_content = potential_json.strip()
+                    except json.JSONDecodeError:
+                        logging.warning("Found a bracket pair, but it's not valid JSON.")
+                        pass
 
         if not think_content or not action_content:
-            logging.warning(f"解析LLM输出失败：未能找到 think 或 action 标签。原始文本: {text}")
+            logging.warning(f"Parsing failed: Could not find both <think> and a valid <action>/JSON block.")
 
         return think_content, action_content
+
     except Exception as e:
-        logging.error(f"解析LLM输出时发生异常。错误: {e}")
+        logging.error(f"An exception occurred during LLM output parsing: {e}")
         return None, None
 
 
@@ -76,16 +107,32 @@ async def run_agent_workflow():
     testid = None
 
     try:
-        # === 阶段 0: 静态建筑信息提取 ===
-        logging.info("=" * 50)
-        logging.info("Executing Stage 0: Static Building Information Extraction.")
-        #await asyncio.to_thread(run_extraction_pipeline)
-        logging.info("Stage 0 finished.")
+        # # === 阶段 0: 静态建筑信息提取 ===(建议分两部分来)
+        # logging.info("=" * 50)
+        # logging.info("Executing Stage 0: Static Building Information Extraction.")
+        # await asyncio.to_thread(run_extraction_pipeline)
+        # logging.info("Stage 0 finished.")
+        # # === 阶段 0: 静态建筑信息提取 ===
+
+        # 【修改】: 加载并选择目标
+        objectives_config = load_objectives_config()
+        if SELECTED_OBJECTIVE not in objectives_config:
+            raise ValueError(f"Selected objective '{SELECTED_OBJECTIVE}' not found in objectives_config.yaml")
+
+        selected_objective_config = objectives_config[SELECTED_OBJECTIVE]
+        objective_description = selected_objective_config['description']
+        reward_function_name = selected_objective_config['reward_function']
+
+        # 动态组装完整的用户需求
+        user_demand_for_llm = f"{CONTROLLABLE_PARAM_DESC}\n{objective_description}"
+
+        logging.info(f"Running simulation with objective: '{SELECTED_OBJECTIVE}'")
+        logging.info(f"Reward function to be used: '{reward_function_name}'")
 
         # === 阶段 1: BOPTEST环境初始化 ===
         logging.info("=" * 50)
         logging.info("Executing Stage 1: Select Test Case and Initialize.")
-        testcase_name = "bestest_air"
+        testcase_name = TEST_CASE_NAME
         testid = await asyncio.to_thread(select_testcase, testcase_name)
 
         if not testid:
@@ -93,8 +140,8 @@ async def run_agent_workflow():
             return
         # 【新增】: 设置全局控制步长
         await asyncio.to_thread(set_step, testid, CONTROL_STEP)
-        start_time = 31*24*3600
-        warmup_period = 86400
+        start_time = START_TIME
+        warmup_period = WARMUP_PERIOD
         initial_state = await asyncio.to_thread(initialize, testid, start_time, warmup_period)
 
         if not initial_state:
@@ -109,7 +156,7 @@ async def run_agent_workflow():
         memory = MemoryStore(testid)
         # 【修复】: 创建 RewardCalculator 的一个实例
         reward_calculator = RewardCalculator()
-        static_info_path = os.path.join(OUTPUT_DATA_DIR, "static_building_info.json")
+        static_info_path = os.path.join(os.path.dirname(__file__), 'data', 'output', 'static_building_info.json')
         static_info = load_json_file(static_info_path)
 
         if static_info:
@@ -146,21 +193,38 @@ async def run_agent_workflow():
             synthesized_input = \
             (await information_synthesizer.run(task=json.dumps(input_for_synthesizer, indent=4))).messages[-1].content
 
-            # --- 阶段 4: 决策制定 (含奖励反馈) ---
-            decision_maker, instruction = make_decision_maker_agent()
+            # --- 【新增】阶段 3.5: 知识检索 (条件性执行) ---
+            retrieved_knowledge = "No external knowledge was consulted."
+            if USE_GRAPHRAG_TOOL:
+                logging.info(f"--- [Step {i + 1}] Stage 3.5: Knowledge Retrieval ---")
+                try:
+                    knowledge_retriever = make_knowledge_retriever_agent()
+                    # 构造给知识检索代理的输入
+                    retriever_input = (
+                        f"[CURRENT STATE]:\n{synthesized_input}\n\n"
+                        f"[USER GOAL]:\n{user_demand_for_llm}"
+                    )
+                    # 运行知识检索代理
+                    retrieval_result = await knowledge_retriever.run(task=retriever_input)
+                    # 知识就是最后一个消息的内容
+                    retrieved_knowledge = retrieval_result.messages[-1].content
+                    logging.info("--- Knowledge retrieval successful ---")
+                except Exception as e:
+                    logging.error(f"Knowledge retrieval failed: {e}. Proceeding without external knowledge.")
 
-            # 【修改】: 构造发送给LLM的完整任务字符串
+            # --- 阶段 4: 最终决策 ---
+            logging.info(f"--- [Step {i + 1}] Stage 4: Decision Making ---")
+            decision_maker, instruction = make_decision_maker_agent()
             last_reward = memory.get_last_reward()
-            # 【修复】: 确保 last_reward 不为 None，以避免格式化错误
-            if last_reward is None:
-                last_reward = 0.0
+            if last_reward is None: last_reward = 0.0
+
+            # 【修改】: 构造包含所有信息的最终输入
             llm_input_for_decision = (
-                f"--- CONTEXT AND USER DEMAND ---\n"
-                f"{synthesized_input}\n\n"
-                f"User's primary goal: {USER_DEMAND}\n\n"
-                f"--- FEEDBACK ON YOUR LAST ACTION ---\n"
-                f"Your previous action resulted in a reward of: {last_reward:.4f}.\n"
-                f"A higher reward is better. If the reward is negative, you must analyze why and adjust your strategy."
+                f"//-- INPUTS --//\n"
+                f"[CURRENT STATE]:\n{synthesized_input}\n\n"
+                f"[RETRIEVED KNOWLEDGE]:\n{retrieved_knowledge}\n\n"
+                f"[USER GOAL]:\n{user_demand_for_llm}\n\n"
+                f"[LAST REWARD]:\n{last_reward:.4f}"
             )
 
             llm_raw_output = (await decision_maker.run(task=llm_input_for_decision)).messages[-1].content
@@ -178,8 +242,10 @@ async def run_agent_workflow():
                     if feedback:
                         kpis = feedback.get("kpis", {})
                         last_obj = memory.get_last_objective_integrand()
-                        # 【修复】: 通过实例来调用方法
-                        reward, new_obj = reward_calculator.calculate_reward_ener_plus_discomfort(kpis, last_obj)
+                        # 【修改】: 动态调用奖励函数
+                        reward_function = getattr(reward_calculator, reward_function_name)
+                        reward, new_obj = reward_function(kpis, last_obj)
+
                         memory.set_last_objective_integrand(new_obj)
 
                         print(f"[Step {current_step_num + 1}] KPIs Received: {kpis}")

@@ -2,59 +2,59 @@
     "action_space": {
         "actions": [
             {
-                "name": "con_oveTSetCoo_activate",
-                "description": "Activation signal to overwrite input con_oveTSetCoo_u where 1 activates, 0 deactivates (default value)",
+                "name": "oveFan_activate",
+                "description": "Activation signal to overwrite input oveFan_u where 1 activates, 0 deactivates (default value)",
                 "min_value": 0.0,
                 "max_value": 1.0,
                 "unit": "1"
             },
             {
-                "name": "con_oveTSetCoo_u",
-                "description": "Zone temperature setpoint for cooling",
+                "name": "oveFan_u",
+                "description": "Integer signal to control the heat pump evaporator fan either on or off",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "oveHeaPumY_activate",
+                "description": "Activation signal to overwrite input oveHeaPumY_u where 1 activates, 0 deactivates (default value)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "oveHeaPumY_u",
+                "description": "Heat pump modulating signal for compressor speed between 0 (not working) and 1 (working at maximum capacity)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "ovePum_activate",
+                "description": "Activation signal to overwrite input ovePum_u where 1 activates, 0 deactivates (default value)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "ovePum_u",
+                "description": "Integer signal to control the emission circuit pump either on or off",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "oveTSet_activate",
+                "description": "Activation signal to overwrite input oveTSet_u where 1 activates, 0 deactivates (default value)",
+                "min_value": 0.0,
+                "max_value": 1.0,
+                "unit": "1"
+            },
+            {
+                "name": "oveTSet_u",
+                "description": "Zone operative temperature setpoint",
                 "min_value": 278.15,
                 "max_value": 308.15,
-                "unit": "K"
-            },
-            {
-                "name": "con_oveTSetHea_activate",
-                "description": "Activation signal to overwrite input con_oveTSetHea_u where 1 activates, 0 deactivates (default value)",
-                "min_value": 0.0,
-                "max_value": 1.0,
-                "unit": "1"
-            },
-            {
-                "name": "con_oveTSetHea_u",
-                "description": "Zone temperature setpoint for heating",
-                "min_value": 278.15,
-                "max_value": 308.15,
-                "unit": "K"
-            },
-            {
-                "name": "fcu_oveFan_activate",
-                "description": "Activation signal to overwrite input fcu_oveFan_u where 1 activates, 0 deactivates (default value)",
-                "min_value": 0.0,
-                "max_value": 1.0,
-                "unit": "1"
-            },
-            {
-                "name": "fcu_oveFan_u",
-                "description": "Fan control signal as air mass flow rate normalized to the design air mass flow rate",
-                "min_value": 0.0,
-                "max_value": 1.0,
-                "unit": "1"
-            },
-            {
-                "name": "fcu_oveTSup_activate",
-                "description": "Activation signal to overwrite input fcu_oveTSup_u where 1 activates, 0 deactivates (default value)",
-                "min_value": 0.0,
-                "max_value": 1.0,
-                "unit": "1"
-            },
-            {
-                "name": "fcu_oveTSup_u",
-                "description": "Supply air temperature setpoint",
-                "min_value": 285.15,
-                "max_value": 313.15,
                 "unit": "K"
             }
         ]
@@ -62,157 +62,182 @@
     "observation_space": {
         "observations": [
             {
-                "name": "fcu_reaFloSup_y",
-                "description": "Supply air mass flow rate",
-                "unit": "kg/s"
-            },
-            {
-                "name": "fcu_reaPCoo_y",
-                "description": "Cooling electrical power consumption",
-                "unit": "W"
-            },
-            {
-                "name": "fcu_reaPFan_y",
-                "description": "Supply fan electrical power consumption",
-                "unit": "W"
-            },
-            {
-                "name": "fcu_reaPHea_y",
-                "description": "Heating thermal power consumption",
-                "unit": "W"
-            },
-            {
-                "name": "zon_reaCO2RooAir_y",
-                "description": "Zone air CO2 concentration",
+                "name": "reaCO2RooAir_y",
+                "description": "CO2 concentration in the zone",
                 "unit": "ppm"
             },
             {
-                "name": "zon_reaPLig_y",
-                "description": "Lighting power submeter",
+                "name": "reaCOP_y",
+                "description": "Heat pump COP",
+                "unit": "1"
+            },
+            {
+                "name": "reaPFan_y",
+                "description": "Electrical power of the heat pump evaporator fan",
                 "unit": "W"
             },
             {
-                "name": "zon_reaPPlu_y",
-                "description": "Plug load power submeter",
+                "name": "reaPHeaPum_y",
+                "description": "Heat pump electrical power",
                 "unit": "W"
             },
             {
-                "name": "zon_reaTRooAir_y",
-                "description": "Zone air temperature",
+                "name": "reaPPumEmi_y",
+                "description": "Emission circuit pump electrical power",
+                "unit": "W"
+            },
+            {
+                "name": "reaQFloHea_y",
+                "description": "Floor heating thermal power released to the zone",
+                "unit": "W"
+            },
+            {
+                "name": "reaQHeaPumCon_y",
+                "description": "Heat pump thermal power exchanged in the condenser",
+                "unit": "W"
+            },
+            {
+                "name": "reaQHeaPumEva_y",
+                "description": "Heat pump thermal power exchanged in the evaporator",
+                "unit": "W"
+            },
+            {
+                "name": "reaTRet_y",
+                "description": "Return water temperature from radiant floor",
                 "unit": "K"
             },
             {
-                "name": "zon_weaSta_reaWeaCeiHei_y",
+                "name": "reaTSetCoo_y",
+                "description": "Zone operative temperature setpoint for cooling",
+                "unit": "K"
+            },
+            {
+                "name": "reaTSetHea_y",
+                "description": "Zone operative temperature setpoint for heating",
+                "unit": "K"
+            },
+            {
+                "name": "reaTSup_y",
+                "description": "Supply water temperature to radiant floor",
+                "unit": "K"
+            },
+            {
+                "name": "reaTZon_y",
+                "description": "Zone operative temperature",
+                "unit": "K"
+            },
+            {
+                "name": "weaSta_reaWeaCeiHei_y",
                 "description": "Cloud cover ceiling height measurement",
                 "unit": "m"
             },
             {
-                "name": "zon_weaSta_reaWeaCloTim_y",
+                "name": "weaSta_reaWeaCloTim_y",
                 "description": "Day number with units of seconds",
                 "unit": "s"
             },
             {
-                "name": "zon_weaSta_reaWeaHDifHor_y",
+                "name": "weaSta_reaWeaHDifHor_y",
                 "description": "Horizontal diffuse solar radiation measurement",
                 "unit": "W/m2"
             },
             {
-                "name": "zon_weaSta_reaWeaHDirNor_y",
+                "name": "weaSta_reaWeaHDirNor_y",
                 "description": "Direct normal radiation measurement",
                 "unit": "W/m2"
             },
             {
-                "name": "zon_weaSta_reaWeaHGloHor_y",
+                "name": "weaSta_reaWeaHGloHor_y",
                 "description": "Global horizontal solar irradiation measurement",
                 "unit": "W/m2"
             },
             {
-                "name": "zon_weaSta_reaWeaHHorIR_y",
+                "name": "weaSta_reaWeaHHorIR_y",
                 "description": "Horizontal infrared irradiation measurement",
                 "unit": "W/m2"
             },
             {
-                "name": "zon_weaSta_reaWeaLat_y",
+                "name": "weaSta_reaWeaLat_y",
                 "description": "Latitude of the location",
                 "unit": "rad"
             },
             {
-                "name": "zon_weaSta_reaWeaLon_y",
+                "name": "weaSta_reaWeaLon_y",
                 "description": "Longitude of the location",
                 "unit": "rad"
             },
             {
-                "name": "zon_weaSta_reaWeaNOpa_y",
+                "name": "weaSta_reaWeaNOpa_y",
                 "description": "Opaque sky cover measurement",
                 "unit": "1"
             },
             {
-                "name": "zon_weaSta_reaWeaNTot_y",
+                "name": "weaSta_reaWeaNTot_y",
                 "description": "Sky cover measurement",
                 "unit": "1"
             },
             {
-                "name": "zon_weaSta_reaWeaPAtm_y",
+                "name": "weaSta_reaWeaPAtm_y",
                 "description": "Atmospheric pressure measurement",
                 "unit": "Pa"
             },
             {
-                "name": "zon_weaSta_reaWeaRelHum_y",
+                "name": "weaSta_reaWeaRelHum_y",
                 "description": "Outside relative humidity measurement",
                 "unit": "1"
             },
             {
-                "name": "zon_weaSta_reaWeaSolAlt_y",
+                "name": "weaSta_reaWeaSolAlt_y",
                 "description": "Solar altitude angle measurement",
                 "unit": "rad"
             },
             {
-                "name": "zon_weaSta_reaWeaSolDec_y",
+                "name": "weaSta_reaWeaSolDec_y",
                 "description": "Solar declination angle measurement",
                 "unit": "rad"
             },
             {
-                "name": "zon_weaSta_reaWeaSolHouAng_y",
+                "name": "weaSta_reaWeaSolHouAng_y",
                 "description": "Solar hour angle measurement",
                 "unit": "rad"
             },
             {
-                "name": "zon_weaSta_reaWeaSolTim_y",
+                "name": "weaSta_reaWeaSolTim_y",
                 "description": "Solar time",
                 "unit": "s"
             },
             {
-                "name": "zon_weaSta_reaWeaSolZen_y",
+                "name": "weaSta_reaWeaSolZen_y",
                 "description": "Solar zenith angle measurement",
                 "unit": "rad"
             },
             {
-                "name": "zon_weaSta_reaWeaTBlaSky_y",
+                "name": "weaSta_reaWeaTBlaSky_y",
                 "description": "Black-body sky temperature measurement",
                 "unit": "K"
             },
             {
-                "name": "zon_weaSta_reaWeaTDewPoi_y",
+                "name": "weaSta_reaWeaTDewPoi_y",
                 "description": "Dew point temperature measurement",
                 "unit": "K"
             },
             {
-                "name": "zon_weaSta_reaWeaTDryBul_y",
+                "name": "weaSta_reaWeaTDryBul_y",
                 "description": "Outside drybulb temperature measurement",
                 "unit": "K"
             },
             {
-                "name": "zon_weaSta_reaWeaTWetBul_y",
+                "name": "weaSta_reaWeaTWetBul_y",
                 "description": "Wet bulb temperature measurement",
                 "unit": "K"
             },
             {
-                "name": "zon_weaSta_reaWeaWinDir_y",
+                "name": "weaSta_reaWeaWinDir_y",
                 "description": "Wind direction measurement",
                 "unit": "rad"
             },
             {
-                "name": "zon_weaSta_reaWeaWinSpe_y",
+                "name": "weaSta_reaWeaWinSpe_y",
                 "description": "Wind speed measurement",
                 "unit": "m/s"
             }
@@ -220,9 +245,9 @@
     },
     "building_info": {
         "general": {
-            "building_type": null,
-            "location": "Denver, CO, USA",
-            "climate_zone": "Denver-Stapleton,CO,USA,TMY",
+            "building_type": "Residential",
+            "location": "Brussels, Belgium",
+            "climate_zone": null,
             "total_floor_area": null,
             "number_of_floors": null,
             "year_of_construction": null
@@ -231,21 +256,21 @@
             "exterior_walls": {
                 "layers": [
                     {
-                        "name": "Layer 1",
+                        "name": "Layer 1 (wood siding)",
                         "thickness_m": 0.009,
                         "thermal_conductivity_W_mK": 0.14,
                         "specific_heat_capacity_J_kgK": 900.0,
                         "density_kg_m3": 530.0
                     },
                     {
-                        "name": "Layer 2",
+                        "name": "Layer 2 (insulation)",
                         "thickness_m": 0.0615,
                         "thermal_conductivity_W_mK": 0.04,
                         "specific_heat_capacity_J_kgK": 1400.0,
                         "density_kg_m3": 10.0
                     },
                     {
-                        "name": "Layer 3",
+                        "name": "Layer 3 (concrete block)",
                         "thickness_m": 0.1,
                         "thermal_conductivity_W_mK": 0.51,
                         "specific_heat_capacity_J_kgK": 1000.0,
@@ -260,21 +285,21 @@
             "roof": {
                 "layers": [
                     {
-                        "name": "Layer 1",
+                        "name": "Layer 1 (roof deck)",
                         "thickness_m": 0.019,
                         "thermal_conductivity_W_mK": 0.14,
                         "specific_heat_capacity_J_kgK": 900.0,
                         "density_kg_m3": 530.0
                     },
                     {
-                        "name": "Layer 2",
+                        "name": "Layer 2 (fiber glass)",
                         "thickness_m": 0.1118,
                         "thermal_conductivity_W_mK": 0.04,
                         "specific_heat_capacity_J_kgK": 840.0,
                         "density_kg_m3": 12.0
                     },
                     {
-                        "name": "Layer 3",
+                        "name": "Layer 3 (plaster board)",
                         "thickness_m": 0.01,
                         "thermal_conductivity_W_mK": 0.16,
                         "specific_heat_capacity_J_kgK": 840.0,
@@ -289,18 +314,32 @@
             "floors": {
                 "layers": [
                     {
-                        "name": "Layer 1",
-                        "thickness_m": 1.007,
-                        "thermal_conductivity_W_mK": 0.04,
-                        "specific_heat_capacity_J_kgK": 0.0,
-                        "density_kg_m3": 0.0
+                        "name": "Layer 1 (concrete)",
+                        "thickness_m": 0.15,
+                        "thermal_conductivity_W_mK": 1.4,
+                        "specific_heat_capacity_J_kgK": 840.0,
+                        "density_kg_m3": 2100.0
                     },
                     {
-                        "name": "Layer 2",
-                        "thickness_m": 0.08,
-                        "thermal_conductivity_W_mK": 1.13,
-                        "specific_heat_capacity_J_kgK": 1000.0,
-                        "density_kg_m3": 1400.0
+                        "name": "Layer 2 (insulation)",
+                        "thickness_m": 0.2,
+                        "thermal_conductivity_W_mK": 0.02,
+                        "specific_heat_capacity_J_kgK": 1470.0,
+                        "density_kg_m3": 30.0
+                    },
+                    {
+                        "name": "Layer 3 (screed)",
+                        "thickness_m": 0.05,
+                        "thermal_conductivity_W_mK": 0.6,
+                        "specific_heat_capacity_J_kgK": 840.0,
+                        "density_kg_m3": 1100.0
+                    },
+                    {
+                        "name": "Layer 4 (tile)",
+                        "thickness_m": 0.01,
+                        "thermal_conductivity_W_mK": 1.4,
+                        "specific_heat_capacity_J_kgK": 840.0,
+                        "density_kg_m3": 2100.0
                     }
                 ],
                 "ir_emissivity_outside": null,
@@ -308,35 +347,58 @@
                 "ir_emissivity_inside": null,
                 "solar_emissivity_inside": null
             },
-            "windows": null
+            "windows": [
+                {
+                    "name": "South-oriented window",
+                    "area_m2": 24.0,
+                    "orientation": null,
+                    "width_m": null,
+                    "height_m": null,
+                    "type": null,
+                    "glass_thickness_mm": null,
+                    "air_gap_mm": null
+                }
+            ]
         },
         "internal_loads": {
             "zones": [
                 {
-                    "name": "Office",
-                    "occupancy_schedule": "8am to 6pm",
-                    "internal_heat_gains": {
-                        "internal_gains": null,
-                        "plug_loads": "computers and monitors",
-                        "lighting": "hanging fluorescent fixtures",
-                        "occupied_period_max": null,
-                        "unoccupied_period_max": null
-                    },
-                    "temperature_setpoints": {
-                        "occupied": {
-                            "heating": 21,
-                            "cooling": 24
-                        },
-                        "unoccupied": {
-                            "heating": 15,
-                            "cooling": 30
-                        }
-                    },
+                    "name": "Single Zone",
+                    "occupancy_schedule": "5 people before 7 am and after 8 pm each weekday and full time during weekends",
+                    "internal_heat_gains": null,
+                    "temperature_setpoints": null,
                     "zone_floor_area": null,
-                    "occupancy": 2
+                    "internal_loads": "No internal loads other than the occupants"
                 }
             ]
         },
-        "hvac": null
+        "hvac": {
+            "hvac_systems": [
+                {
+                    "type": null,
+                    "description": "An air-to-water modulating heat pump extracts energy from the ambient air to heat up the floor heating emission system.",
+                    "nominal_heating_capacity_kW": 15.0,
+                    "components": [
+                        {
+                            "name": "Evaporator Fan",
+                            "nominal_mass_flow_rate_kg_s": null,
+                            "nominal_pressure_rise_kPa": 0.1,
+                            "total_efficiency": 0.49
+                        },
+                        {
+                            "name": "Floor Heating Pump",
+                            "nominal_mass_flow_rate_kg_s": 0.5,
+                            "nominal_pressure_rise_kPa": null,
+                            "total_efficiency": 0.49
+                        }
+                    ],
+                    "fan": null,
+                    "chiller": null,
+                    "boiler": null,
+                    "controller": null,
+                    "name": "Air-to-water heat pump"
+                }
+            ]
+        }
     }
 }
