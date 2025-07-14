@@ -1,0 +1,12 @@
+{
+  "building_control_v1": {
+    "file_name": "finetune/control_finetune_data.jsonl",
+    "formatting": "alpaca",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  }
+}
