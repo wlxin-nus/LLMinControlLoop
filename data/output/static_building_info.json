@@ -248,8 +248,8 @@
             "building_type": "Residential",
             "location": "Brussels, Belgium",
             "climate_zone": null,
-            "total_floor_area": null,
-            "number_of_floors": null,
+            "total_floor_area": 768.0,
+            "number_of_floors": 1,
             "year_of_construction": null
         },
         "envelope": {
@@ -349,9 +349,9 @@
             },
             "windows": [
                 {
-                    "name": "South-oriented window",
+                    "name": null,
                     "area_m2": 24.0,
-                    "orientation": null,
+                    "orientation": "South",
                     "width_m": null,
                     "height_m": null,
                     "type": null,
@@ -363,40 +363,48 @@
         "internal_loads": {
             "zones": [
                 {
-                    "name": "Single Zone",
+                    "name": null,
                     "occupancy_schedule": "5 people before 7 am and after 8 pm each weekday and full time during weekends",
                     "internal_heat_gains": null,
                     "temperature_setpoints": null,
-                    "zone_floor_area": null,
-                    "internal_loads": "No internal loads other than the occupants"
+                    "zone_floor_area": null
                 }
             ]
         },
         "hvac": {
             "hvac_systems": [
                 {
-                    "type": null,
-                    "description": "An air-to-water modulating heat pump extracts energy from the ambient air to heat up the floor heating emission system.",
-                    "nominal_heating_capacity_kW": 15.0,
+                    "type": "Air-to-water heat pump",
+                    "description": null,
+                    "nominal_heating_capacity_kW": null,
                     "components": [
+                        {
+                            "name": "Heat Pump",
+                            "nominal_mass_flow_rate_kg_s": 0.5,
+                            "nominal_pressure_rise_kPa": null,
+                            "total_efficiency": null,
+                            "description": "Air-to-water modulating heat pump with a scroll compressor"
+                        },
+                        {
+                            "name": "Floor Heating System",
+                            "nominal_mass_flow_rate_kg_s": 0.5,
+                            "nominal_pressure_rise_kPa": null,
+                            "total_efficiency": null,
+                            "description": "Floor heating system with water as working fluid"
+                        },
                         {
                             "name": "Evaporator Fan",
                             "nominal_mass_flow_rate_kg_s": null,
                             "nominal_pressure_rise_kPa": 0.1,
-                            "total_efficiency": 0.49
-                        },
-                        {
-                            "name": "Floor Heating Pump",
-                            "nominal_mass_flow_rate_kg_s": 0.5,
-                            "nominal_pressure_rise_kPa": null,
-                            "total_efficiency": 0.49
+                            "total_efficiency": null,
+                            "description": "Fan blows ambient air through the heat pump evaporator"
                         }
                     ],
                     "fan": null,
                     "chiller": null,
                     "boiler": null,
                     "controller": null,
-                    "name": "Air-to-water heat pump"
+                    "nominal_capacity_kW": 15.0
                 }
             ]
         }

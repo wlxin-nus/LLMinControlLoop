@@ -31,7 +31,9 @@ def get_deepseek_client() -> OpenAIChatCompletionClient:
         temperature=model_cfg["parameters"]["temperature"],
         max_tokens=model_cfg["parameters"]["max_tokens"],
         top_p=model_cfg["parameters"]["top_p"],
-        # 为autogen提供模型能力信息
+        timeout=60.0,
+        max_retries=10,
+    # 为autogen提供模型能力信息
         # Provide model capability information for autogen
         model_info={
             "family": model_cfg["family"],

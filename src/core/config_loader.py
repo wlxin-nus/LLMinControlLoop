@@ -30,7 +30,6 @@ def load_yaml_file(file_path: Path) -> Dict[str, Any]:
         except yaml.YAMLError as e:
             raise yaml.YAMLError(f"Error parsing YAML file {file_path}: {e}")
 
-
 def load_objectives_config() -> Dict[str, Any]:
     """加载目标配置文件。 (Loads the objectives configuration file.)"""
     objectives_path = Path(CONFIG_DIR) / 'objectives_config.yaml'

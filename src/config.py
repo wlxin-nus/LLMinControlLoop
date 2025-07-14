@@ -19,14 +19,14 @@ CONFIG_DIR = os.path.join(PROJECT_ROOT, "configs") # 【新增】: Config目录�
 
 BOPTEST_BASE_URL = "http://127.0.0.1:80"
 
-TEST_CASE_NAME = "bestest_hydronic_heat_pump"
+TEST_CASE_NAME = "bestest_air"
 
 # 确保目录存在
 os.makedirs(OUTPUT_DATA_DIR, exist_ok=True)
 os.makedirs(INPUT_DATA_DIR, exist_ok=True)
 
 # --- 模拟参数 ---
-START_TIME = 16*24*3600
+START_TIME = 334*24*3600
 WARMUP_PERIOD = 7*24*3600
 HISTORY_WINDOW_SIZE = 3
 CONTROL_STEP = 3600
@@ -41,8 +41,9 @@ SELECTED_OBJECTIVE = "balance_energy_comfort"
 # 2. 用户自定义的、关于可控参数的描述。
 #    这部分会与所选目标的描述动态拼接。
 CONTROLLABLE_PARAM_DESC = (
-    "The controllable parameter is oveHeaPumY_u in the range ‘min_value’: 0.0, "
-    "‘max_value’: 1.0, Heat pump modulating signal for compressor speed between 0 (not working) and 1 (working at maximum capacity)"
+    "The controllable parameter is con_oveTSetCoo_u in the range ‘min_value’: 278.15, "
+    "‘max_value’: 308.15, Zone temperature setpoint for cooling"
+
 )
 
 # --- 【新增】: GraphRAG 工具配置 ---
